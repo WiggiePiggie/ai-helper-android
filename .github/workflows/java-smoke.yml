@@ -1,0 +1,29 @@
+name: Java extension smoke tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  java-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compile standalone Java components
+        run: |
+          mkdir -p "$RUNNER_TEMP/eva-classes"
+          javac -encoding UTF-8 -d "$RUNNER_TEMP/eva-classes" \
+            feature-src/com/aihelper/extras/SmartGuestPolicy.java \
+            feature-src/com/aihelper/extras/SmartIntent.java \
+            feature-src/com/aihelper/extras/CoalescingWorkQueue.java \
+            tests/ExtensionPolicySmoke.java
+      - name: Execute policy, parser and queue checks
+        run: java -cp "$RUNNER_TEMP/eva-classes" com.aihelper.extras.ExtensionPolicySmoke
