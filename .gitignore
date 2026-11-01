@@ -1,12 +1,36 @@
+# Android Studio and local builds
 .gradle/
 .idea/
 **/build/
+local.properties
 *.apk
 *.aab
+
+# Local AI weights / model assets
 *.gguf
 *.safetensors
+*.onnx
+*.tflite
+*.pt
+*.pth
+
+# Keys, credentials and local runtime data
 *.keystore
 *.jks
+*.p12
+*.pfx
 *.pem
+*.key
+*.asc
 .env
-local.properties
+.env.*
+key.properties
+*.db
+*.sqlite
+*.sqlite3
+
+# Recovery artifacts and local exports
+*.bak
+*.backup
+*.log
+__pycache__/
