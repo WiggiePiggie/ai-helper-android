@@ -51,12 +51,32 @@ README.md
 
 The engine includes draft-only and stopped modes. These safeguards are **implemented in the source**, not a claim of completed external security review or production reliability.
 
+## Java regression tests
+
+A minimal, **Android-independent** smoke suite checks the Java-only guest policy, model-intent parser and bounded coalescing queue. It uses synthetic strings and does not read notifications or send messages.
+
+- 19 checks covering configured facts, non-disclosure and escalation, strict model JSON parsing, queue replacement and capacity
+- Run automatically with **GitHub Actions / Java 17**: [Java extension smoke tests](.github/workflows/java-smoke.yml)
+- Run locally with a JDK 17+ (Unix shell):
+
+```bash
+mkdir -p /tmp/eva-java-tests
+javac -encoding UTF-8 -d /tmp/eva-java-tests \
+  feature-src/com/aihelper/extras/SmartGuestPolicy.java \
+  feature-src/com/aihelper/extras/SmartIntent.java \
+  feature-src/com/aihelper/extras/CoalescingWorkQueue.java \
+  tests/ExtensionPolicySmoke.java
+java -cp /tmp/eva-java-tests com.aihelper.extras.ExtensionPolicySmoke
+```
+
+A successful smoke suite **does not** validate the recovered APK, notification integrations or actual LLM runtime.
+
 ## Build and testing status
 
 - **Not standalone-buildable:** No Gradle project, full original app source, Android resources, recovered bytecode or compiled native inference engine is included here.
 - **Not a downloadable APK:** This repository intentionally excludes the recovery build artifacts and signing material.
 - Some extension classes depend on types and services available only in the recovered application.
-- A local source-level smoke-test class, `GuestInferenceSmoke.java`, is included; there is **no runnable GitHub Actions test suite** in this repository at present.
+- The standalone Java smoke suite runs in GitHub Actions; `GuestInferenceSmoke.java` is Android-dependent and **not** executed by that workflow.
 - Actual end-to-end guest message delivery through third-party notifications has **not** been established by the repository contents.
 
 For these reasons, this repository is best viewed as a **code and architecture showcase**, rather than installation instructions for an end-user product.
